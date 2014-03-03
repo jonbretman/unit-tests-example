@@ -59,6 +59,10 @@ module.exports = function (grunt) {
 
     });
 
+    grunt.event.on('coverage', function (coverage) {
+        grunt.config('coverage.coverage', coverage);
+    });
+
     grunt.registerMultiTask('coverage', 'Generates coverage reports for JS using Istanbul', function () {
 
         if (this.target === 'instrument') {
@@ -99,7 +103,7 @@ module.exports = function (grunt) {
             reporters.forEach(function (reporter) {
 
                 Report.create(reporter, {
-                    dir: dest + reporter
+                    dir: dest + '/' + reporter
                 }).writeReport(collector, true);
 
             });
@@ -124,7 +128,7 @@ module.exports = function (grunt) {
 
         // write template to tests directory and run tests
         grunt.file.write(options.runner, template);
-        grunt.task.run('coverage:instrument', 'mocha');
+        grunt.task.run('coverage:instrument', 'mocha', 'coverage:report');
     });
 
 };
